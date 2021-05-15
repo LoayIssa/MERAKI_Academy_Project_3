@@ -1,8 +1,13 @@
 const express = require("express");
+const  { uuid }  = require('uuidv4');
+
+
 
 const app = express();
 const port = 5000;
 app.use(express.json());
+
+
 
 const articles = [
     {
@@ -72,6 +77,19 @@ app.get("/articles/search_1", getArticlesByAuthor);
 app.get("/articles/search_2", getAnArticleById);
 
 /*_________________________________ */
+const createNewArticle =  (req,res)=>{
+    const obj = {
+        title: req.body.title,
+        description:req.body.description,
+        author: req.body.author,
+        id : uuid(),
+    }
+    articles.push(obj)
+
+    res.status(201)
+    res.json(obj)
+}
+app.post("/articles",createNewArticle)
 
 
 
@@ -80,6 +98,7 @@ app.get("/articles/search_2", getAnArticleById);
 
 
 
+/*_________________________________ */
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
   });
