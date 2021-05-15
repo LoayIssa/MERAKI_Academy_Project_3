@@ -61,15 +61,15 @@ app.get("/articles/search_1", getArticlesByAuthor);
   const getAnArticleById = (req,res)=>{
     const id = req.query.id
     const found = articles.find((element,index) => {
-        return element.id === parseInt(id);
+        return element.id == id;
       });
     if (found) {
-    console.log(found)
-    res.status(200)
-    res.json(found)
+      console.log(found)
+      res.status(200)
+      res.json(found)
     }else{
-        res.status(404)
-    res.json("not found")
+      res.status(404)
+      res.json("not found")
     }
 
 }
@@ -90,7 +90,26 @@ const createNewArticle =  (req,res)=>{
     res.json(obj)
 }
 app.post("/articles",createNewArticle)
+/*_________________________________ */
+const updateAnArticleById = (req,res)=>{
+    id =  req.params.id
+    for (let i=0; i < articles.length ; i++){
+        if (id == articles[i].id ){
+            if (req.body.title&&req.body.description&&req.body.author){
+                articles[i].title= req.body.title
+                articles[i].description= req.body.description
+                articles[i].author= req.body.author
+                res.status(200)
+                res.json(articles[i])
+                return
+            }
+        }
+    }
+    res.status(404);
+    res.json("not found");
+}
 
+app.put("/articles/:id",updateAnArticleById)
 
 
 
