@@ -118,14 +118,32 @@ const deleteArticleById = (req,res)=>{
             articles[i].id=req.body.id
             articles.splice(i,1)[0]
             res.status(201)
-            res.json({ success: true, massage: `Success Delete article with id ${id}` });
+            res.json({ success: true, massage: `Success Delete article with id => ${id}` });
             return
           }
     }
+    res.status(404);
+    res.json("not found");
 
 }
 app.delete("/articles/:id",deleteArticleById)
+/*_________________________________ */
 
+const deleteArticlesByAuthor = (req, res) => {
+  const author = req.body.author;
+  for (let i = 0; i < articles.length; i++) {
+    if (author === articles[i].author) {
+      articles.splice(i, 1);
+      i = i - 1;
+    }
+  }
+  const obj = {
+    success: true,
+    massage: `Success delete all the articles for the author => ${author}`,
+  };
+  res.json(obj);
+};
+app.delete("/articles", deleteArticlesByAuthor);
 
 
 
