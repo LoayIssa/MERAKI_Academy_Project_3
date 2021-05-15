@@ -110,6 +110,21 @@ const updateAnArticleById = (req,res)=>{
 }
 
 app.put("/articles/:id",updateAnArticleById)
+/*_________________________________ */
+const deleteArticleById = (req,res)=>{
+    const id =req.params.id
+    for(let i=0 ; i<articles.length;i++){
+        if(articles[i].id==id){
+            articles[i].id=req.body.id
+            articles.splice(i,1)[0]
+            res.status(201)
+            res.json({ success: true, massage: `Success Delete article with id ${id}` });
+            return
+          }
+    }
+
+}
+app.delete("/articles/:id",deleteArticleById)
 
 
 
