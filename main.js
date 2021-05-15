@@ -35,6 +35,25 @@ const articles = [
 
   app.get("/articles",getAllArticles)
 
+  /* _______________________ */
+
+  const getArticlesByAuthor =  (req, res) => {
+    // query parameters way: "/articles/search_1?author=Jouza"
+    const author = req.query.author
+
+    const arr = articles.filter((element,index)=>{
+
+        return author === element.author
+    })
+    res.status(200)
+    res.json(arr)
+
+      }
+app.get("/articles/search_1", getArticlesByAuthor);
+
+
+
+  /*________________________ */
 
 
 
