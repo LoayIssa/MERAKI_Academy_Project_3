@@ -1,6 +1,6 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
-const { User } = require("./schema");
+const { User , Articale } = require("./schema");
 const db = require ("./db");
 
 const app = express();
@@ -41,7 +41,7 @@ const getAnArticleById = (req, res) => {
 app.get("/articles/search_2", getAnArticleById);
 
 /*_________________________________ */
-const createNewArticle = (req, res) => {
+const createNewAuthor = (req, res) => {
   const  {firstName,lastName,age,country,email,password}= req.body
   const newUser = new  User( {firstName,lastName,age,country,email,password})
   newUser.save().then((result)=>{
@@ -51,7 +51,59 @@ const createNewArticle = (req, res) => {
     res.send(err);
   });
 };
-app.post("/users", createNewArticle);
+app.post("/users", createNewAuthor);
+
+/*_________________________________ */
+
+ app.post("/articles",async (req,res)=>{
+   let userId; 
+  
+   await User.findOne({firstName:"loay"})
+   .then((result)=>{
+     userId = result
+   }).catch((err) => {
+     res.send(err);
+   });
+  
+   const {title,description} = req.body
+     const newArticle = new Articale({
+       title,
+       description,
+       author:userId._id})
+  
+       newArticle.save()
+       .then((result)=>{
+         res.status(201)
+         res.json(result)
+       }).catch((err) => {
+         res.send(err);
+       });
+  
+   });
+ /*_________________________________ */
+ const getAllArticles = (req,res)=>{
+  Articale.find({})
+  .then(result=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err)=>{
+    res.send(err);
+  });
+ }
+app.get("/articles",getAllArticles);
+/*__________________________________ */
+
+const getAllusers = (req,res)=>{
+  User.find({})
+  .then(result=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err)=>{
+    res.send(err);
+  });
+ }
+app.get("/users",getAllusers);
+  
 /*_________________________________ */
 const updateAnArticleById = (req, res) => {
   id = req.params.id;

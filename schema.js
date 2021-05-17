@@ -8,11 +8,12 @@ const userSchema = new mongoose.Schema({
     password:{type:String , required:true},
   });
 
-  const articleSchema = new mongoose.Schema({
-    title:{type:String},
-    description:{type:String},  
-  });
-
+  
+  const articleSchema  = new mongoose.Schema({
+    title:{type:String, required:true, unique:true},
+    description : {type:String, required:true},
+    author:{type:mongoose.Schema.ObjectId,ref:"User"}
+})
 
 const User = mongoose.model("User",userSchema);
 const Articale = mongoose.model("Articale",articleSchema);
