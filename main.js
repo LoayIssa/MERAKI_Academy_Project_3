@@ -77,7 +77,7 @@ app.get("/users",getAllusers);
 /*_________________________________ */
 
 const getArticlesByAuthor = (req, res) => {
- //articles/search_1?author=60a248a7b2f7a53438f92542
+ //articles/search_1?author=userId
   const userId =req.query.author;
   Articale.find({author:userId}).then((result)=>{
     res.status(200);
@@ -111,24 +111,23 @@ const getAnArticleById = (req, res) => {
 
 
 /*_________________________________ */
-const deleteArticleById = (req, res) => {
+const updateAnArticleById = (req, res) => {
   const id = req.params.id;
-  for (let i = 0; i < articles.length; i++) {
-    if (articles[i].id == id) {
-      articles[i].id = req.body.id;
-      articles.splice(i, 1)[0];
-      res.status(201);
-      res.json({
-        success: true,
-        massage: `Success Delete article with id => ${id}`,
-      });
-      return;
-    }
-  }
+  const {title,description,author} = req.body
+  if (req.body.title && req.body.description && req.body.author){
+    Articale.findByIdAndUpdate(id,{title,description,author}, {new:true})
+  .then((result)=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  });
+ }else{
   res.status(404);
-  res.json("not found");
+  res.json("must enter all keys title and  description ");
+ }
 };
-app.delete("/articles/:id", deleteArticleById);
+app.put("/articles/:id", updateAnArticleById);
 /*_________________________________ */
 
 const deleteArticlesByAuthor = (req, res) => {
