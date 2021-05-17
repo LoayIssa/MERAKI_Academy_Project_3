@@ -7,19 +7,6 @@ const app = express();
 const port = 5000;
 app.use(express.json());
 
-/* _______________________ */
-
-const getArticlesByAuthor = (req, res) => {
-  // query parameters way: "/articles/search_1?author=Jouza"
-  const author = req.query.author;
-
-  const arr = articles.filter((element, index) => {
-    return author === element.author;
-  });
-  res.status(200);
-  res.json(arr);
-};
-app.get("/articles/search_1", getArticlesByAuthor);
 
 /*________________________ */
 
@@ -104,26 +91,24 @@ const getAllusers = (req,res)=>{
  }
 app.get("/users",getAllusers);
   
+
 /*_________________________________ */
-const updateAnArticleById = (req, res) => {
-  id = req.params.id;
-  for (let i = 0; i < articles.length; i++) {
-    if (id == articles[i].id) {
-      if (req.body.title && req.body.description && req.body.author) {
-        articles[i].title = req.body.title;
-        articles[i].description = req.body.description;
-        articles[i].author = req.body.author;
-        res.status(200);
-        res.json(articles[i]);
-        return;
-      }
-    }
-  }
-  res.status(404);
-  res.json("not found");
+
+const getArticlesByAuthor = (req, res) => {
+ //articles/search_1?author=60a248a7b2f7a53438f92542
+  const userId =req.query.author;
+  Articale.find({author:userId}).then((result)=>{
+    res.status(200);
+    res.json(result);
+  }).catch((err)=>{
+    res.status(404);
+    res.send(err);
+  })
 };
 
-app.put("/articles/:id", updateAnArticleById);
+app.get("/articles/search_1", getArticlesByAuthor);
+/*_________________________________ */
+
 /*_________________________________ */
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
