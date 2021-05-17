@@ -8,24 +8,6 @@ const port = 5000;
 app.use(express.json());
 
 
-/*________________________ */
-
-const getAnArticleById = (req, res) => {
-  const id = req.query.id;
-  const found = articles.find((element, index) => {
-    return element.id == id;
-  });
-  if (found) {
-    console.log(found);
-    res.status(200);
-    res.json(found);
-  } else {
-    res.status(404);
-    res.json("not found");
-  }
-};
-
-app.get("/articles/search_2", getAnArticleById);
 
 /*_________________________________ */
 const createNewAuthor = (req, res) => {
@@ -108,6 +90,25 @@ const getArticlesByAuthor = (req, res) => {
 
 app.get("/articles/search_1", getArticlesByAuthor);
 /*_________________________________ */
+
+
+
+
+const getAnArticleById = (req, res) => {
+  //articles/search_2?author=_id
+  const id = req.query.id;
+  Articale.find({_id:id}).populate("author","firstName").exec().then((result)=>{
+    console.log(result);
+    res.status(200)
+    res.json(result)
+  }).catch((err)=>{
+    res.send(err)
+  })
+ };
+ 
+ app.get("/articles/search_2", getAnArticleById);
+
+
 
 /*_________________________________ */
 const deleteArticleById = (req, res) => {
