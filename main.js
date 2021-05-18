@@ -130,23 +130,37 @@ const updateAnArticleById = (req, res) => {
 app.put("/articles/:id", updateAnArticleById);
 /*_________________________________ */
 
+const deleteAnArticleById = (req, res) => {
+  const id = req.params.id;
+  Articale.findByIdAndDelete(id).then((result)=>{
+    res.status(200)
+    res.json({
+      success: true,
+      massage: `Success Delete article with id => ${id}`,
+    })
+  }).catch((err) => {
+    res.send(err);
+  });
+};
+app.delete("/articles/:id", deleteAnArticleById);
+
+/*_________________________________ */
 const deleteArticlesByAuthor = (req, res) => {
   const author = req.body.author;
-  for (let i = 0; i < articles.length; i++) {
-    if (author === articles[i].author) {
-      articles.splice(i, 1);
-      i = i - 1;
-    }
-  }
-  const obj = {
-    success: true,
-    massage: `Success delete all the articles for the author => ${author}`,
-  };
-  res.json(obj);
+  Articale.deleteMany({author:author}).then(result=>{
+    res.status(200)
+    res.json({
+      success: true,
+      massage: `Success delete all the articles for the author => ${author}`,
+    })
+  }).catch((err) => {
+    res.send(err);
+  });
 };
 app.delete("/articles", deleteArticlesByAuthor);
 
 /*_________________________________ */
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
