@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
   const articleSchema  = new mongoose.Schema({
     title:{type:String, required:true, unique:true},
     description : {type:String, required:true},
-    author:{type:mongoose.Schema.ObjectId,ref:"User"}
+    author:{type:mongoose.Schema.ObjectId,ref:"User"},
+    comments:[{type:mongoose.Schema.ObjectId,ref:"Comment"}]
 })
 
 const commentsSchema  = new mongoose.Schema({

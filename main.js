@@ -25,45 +25,38 @@ app.post("/users", createNewAuthor);
 /*_________________________________ */
 
 
-const createNewArticle =(req ,res)=>{
-  const {title,description,author} = req.body;
-  const newArticle = new Articale ({title,description,author});
-  newArticle.save().then((result)=>{
-    res.status(200)
-    res.json(result)
-  }).catch((err)=>{
-    res.status(404)
-    res.send(err);
-  })
-
-}
-app.post("/articles",createNewArticle)
-/*
- app.post("/articles",async (req,res)=>{
-   let userId; 
+const createNewArticle  = async (req ,res)=>{
+  let userId; 
   
    await User.findOne({firstName:"loay"})
    .then((result)=>{
+
      userId = result
+
    }).catch((err) => {
      res.send(err);
    });
   
    const {title,description} = req.body
-     const newArticle = new Articale({
+     const newArticle = new Articale({ 
        title,
        description,
        author:userId._id})
   
        newArticle.save()
-       .then((result)=>{
+       .then((result)=>{       
+
+
          res.status(201)
          res.json(result)
+
        }).catch((err) => {
          res.send(err);
        });
-  
-   });
+
+}
+app.post("/articles",  createNewArticle)
+
  /*_________________________________ */
  const getAllArticles = (req,res)=>{
   Articale.find({})
@@ -190,6 +183,28 @@ const login  = (req, res) => {
     
 }
 app.post("/login", login );
+/*_________________________________ */
+const createNewComment =(req,res)=>{
+  // get the id from the params ( بحصل على ايد حتى اضيف على ارتيكل الصحيحه )
+  id =req.params.id;
+const {comment,commenter}=req.body;
+const newComment =new Comment({comment,commenter});
+newComment.save().then(async(result)=>{
+  
+  // acsses artical schema and find by the id then update the schma with commet id 
+
+ await Articale.findOneAndUpdate({_id :id},  {$push:{ comments:result._id}})
+ console.log(result);
+
+  res.status(200);
+  res.json(result);
+}).catch((err)=>{
+  res.status(404);
+  res.send(err)
+})
+
+}
+app.post("/articles/:id/comments", createNewComment)
 
 
 /*___________________________________ */
