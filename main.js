@@ -1,6 +1,6 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
-const { User , Articale } = require("./schema");
+const { User , Articale , Comment} = require("./schema");
 const db = require ("./db");
 
 const app = express();
@@ -24,6 +24,21 @@ app.post("/users", createNewAuthor);
 
 /*_________________________________ */
 
+
+const createNewArticle =(req ,res)=>{
+  const {title,description,author} = req.body;
+  const newArticle = new Articale ({title,description,author});
+  newArticle.save().then((result)=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err)=>{
+    res.status(404)
+    res.send(err);
+  })
+
+}
+app.post("/articles",createNewArticle)
+/*
  app.post("/articles",async (req,res)=>{
    let userId; 
   
@@ -160,6 +175,24 @@ const deleteArticlesByAuthor = (req, res) => {
 app.delete("/articles", deleteArticlesByAuthor);
 
 /*_________________________________ */
+
+const login  = (req, res) => {
+  console.log("hi")
+  const {email,password} = req.body;
+  User.find({email:email,password:password}).then((result)=>{
+    if (result){
+    res.status(200);
+    res.json("Valid login credentials");
+    }else{
+    res.status(401);
+    res.json("Invalid login credentials")};
+  })
+    
+}
+app.post("/login", login );
+
+
+/*___________________________________ */
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
