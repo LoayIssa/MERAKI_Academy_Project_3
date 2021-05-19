@@ -2,6 +2,11 @@ const express = require("express");
 const { uuid } = require("uuidv4");
 const { User , Articale , Comment} = require("./schema");
 const db = require ("./db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+
 
 const app = express();
 const port = 5000;
@@ -9,13 +14,20 @@ app.use(express.json());
 
 
 
+
 /*_________________________________ */
+
 const createNewAuthor = (req, res) => {
+  
   const  {firstName,lastName,age,country,email,password}= req.body
   const newUser = new  User( {firstName,lastName,age,country,email,password})
+
   newUser.save().then((result)=>{
+    console.log("loay")
+
     res.status(201)
     res.json(result)
+    
   }).catch((err) => {
     res.send(err);
   });
@@ -23,6 +35,8 @@ const createNewAuthor = (req, res) => {
 app.post("/users", createNewAuthor);
 
 /*_________________________________ */
+
+
 
 
 const createNewArticle  = async (req ,res)=>{
