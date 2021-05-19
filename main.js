@@ -1,6 +1,6 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
-const { User , Articale , Comment} = require("./schema");
+const { User , Articale , Comment,Role} = require("./schema");
 const db = require ("./db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -13,9 +13,22 @@ const port = 5000;
 app.use(express.json());
 
 
-
+const SECRET = process.env.SECRET;
 
 /*_________________________________ */
+/*________________________________ */
+const createNewRole = (req , res)=>{
+  const {role,permissions}=req.body
+  const newRole = new Role ({role,permissions})
+  newRole.save().then((result)=>{
+    res.status(200);
+    res.json(result)
+  }).catch((err)=>{
+    res.send(err)
+  })
+}
+
+app.post("/roles", createNewRole);
 
 const createNewAuthor = (req, res) => {
   
@@ -24,6 +37,7 @@ const createNewAuthor = (req, res) => {
 
   newUser.save().then((result)=>{
     console.log("loay")
+    // ما بدخل هون 
 
     res.status(201)
     res.json(result)
@@ -183,16 +197,37 @@ app.delete("/articles", deleteArticlesByAuthor);
 
 /*_________________________________ */
 
-const login  = (req, res) => {
-  console.log("hi")
+const login  = (req, res, next) => {
   const {email,password} = req.body;
-  User.find({email:email,password:password}).then((result)=>{
-    if (result){
-    res.status(200);
-    res.json("Valid login credentials");
-    }else{
-    res.status(401);
-    res.json("Invalid login credentials")};
+  User.find({email:email,password:password}).then((response)=>{
+    if(response){
+      const hashedPassword = response.password;
+      bcrypt .compare(password,hashedPassword ,(err , result)=>{
+        if (result){
+          const payload = {
+            userId:`${response._id}`,
+            country:response.country
+          }
+          const options ={expiresIn:"60m"}
+          const token = jwt.sign(payload, SECRET, options);
+
+          res.status(200);
+          res.json(token);
+          }else{
+            const err = new Error(" The password you’ve entered is incorrect");
+            err.status = 403;
+            next(err);
+        };
+
+      })
+    } else {
+         const err = new Error("The  email doesn't exist");
+         err.status = 404;
+        next(err);
+    }
+    
+  }).catch((err)=>{
+    res.send(err);
   })
     
 }
