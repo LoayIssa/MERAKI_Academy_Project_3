@@ -196,46 +196,76 @@ const deleteArticlesByAuthor = (req, res) => {
 app.delete("/articles", deleteArticlesByAuthor);
 
 /*_________________________________ */
+const login  = (req, res, next) =>{
+  let {email,password} = req.body;
+  email= email.toLowerCase();
+  User.findOne({email:email}).then((response)=>{
+   if(response){
+     const hashedPassword = response.password;
+     bcrypt.compare(password,hashedPassword).then((result)=>{
+      if (result){
+        const payload = {
+          userId:`${response._id}`,
+          country:response.country
+        }
+        const options ={expiresIn:"60m"}
+        const token = jwt.sign(payload, SECRET, options);
 
-const login  = (req, res, next) => {
-  const {email,password} = req.body;
-  User.find({email:email,password:password}).then((response)=>{
-    if(response){
-      const hashedPassword = response.password;
-      bcrypt .compare(password,hashedPassword ,(err , result)=>{
-        if (result){
-          const payload = {
-            userId:`${response._id}`,
-            country:response.country
-          }
-          const options ={expiresIn:"60m"}
-          const token = jwt.sign(payload, SECRET, options);
+        res.status(200);
+        res.json(token);
+        }else{
+          res.json(" The password you’ve entered is incorrect")
+          err.status = 403;
+          
+      };
+     })
+     
 
-          res.status(200);
-          res.json(token);
-          }else{
-            const err = new Error(" The password you’ve entered is incorrect");
-            err.status = 403;
-            next(err);
-        };
 
-      })
-    } else {
-         const err = new Error("The  email doesn't exist");
-         err.status = 404;
-        next(err);
-    }
-    
+   }else{
+     res.status(404)
+     res.json( {message: "The email doesn't exist", status: 404})
+
+   }
   }).catch((err)=>{
     res.send(err);
   })
-    
 }
+
 app.post("/login", login );
+
+/*________________________________ */
+const authentication =(req,res,next)=>{
+  console.log("token",req.headers.authentication)
+
+  const token =  req.headers.authorization.split(" ")[1];
+  console.log("token11")
+ try {
+  const verify = jwt.verify(token,SECRET)
+  console.log("verify",verify)
+  if (verify){
+    next()
+
+  }
+    
+ }
+catch (err){
+  res.status(403)
+  return res.json({
+    massage:"invalid",
+    status: 403
+  })
+}    
+    
+
+  
+}
 /*_________________________________ */
 const createNewComment =(req,res)=>{
   // get the id from the params ( بحصل على ايد حتى اضيف على ارتيكل الصحيحه )
+
   id =req.params.id;
+  console.log("loay")
 const {comment,commenter}=req.body;
 const newComment =new Comment({comment,commenter});
 newComment.save().then(async(result)=>{
@@ -253,7 +283,7 @@ newComment.save().then(async(result)=>{
 })
 
 }
-app.post("/articles/:id/comments", createNewComment)
+app.post("/articles/:id/comments", authentication, createNewComment)
 
 
 /*___________________________________ */
