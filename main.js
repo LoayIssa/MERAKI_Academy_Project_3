@@ -32,11 +32,10 @@ app.post("/roles", createNewRole);
 
 const createNewAuthor = (req, res) => {
   
-  const  {firstName,lastName,age,country,email,password}= req.body
-  const newUser = new  User( {firstName,lastName,age,country,email,password})
+  const  {firstName,lastName,age,country,email,password,roles}= req.body
+  const newUser = new  User( {firstName,lastName,age,country,email,password,roles})
 
   newUser.save().then((result)=>{
-    console.log("loay")
     // ما بدخل هون 
 
     res.status(201)
@@ -199,15 +198,18 @@ app.delete("/articles", deleteArticlesByAuthor);
 const login  = (req, res, next) =>{
   let {email,password} = req.body;
   email= email.toLowerCase();
-  User.findOne({email:email}).then((response)=>{
+  User.findOne({email:email}).populate("roles").then((response)=>{
    if(response){
      const hashedPassword = response.password;
      bcrypt.compare(password,hashedPassword).then((result)=>{
       if (result){
         const payload = {
           userId:`${response._id}`,
-          country:response.country
+          country:response.country,
+          role:{role:response.roles.role,permissions:response.roles.permissions}
         }
+
+        console.log("response.role",response)
         const options ={expiresIn:"60m"}
         const token = jwt.sign(payload, SECRET, options);
 
@@ -266,9 +268,9 @@ const createNewComment =(req,res)=>{
 
   id =req.params.id;
   console.log("loay")
-const {comment,commenter}=req.body;
-const newComment =new Comment({comment,commenter});
-newComment.save().then(async(result)=>{
+ const {comment,commenter}=req.body;
+ const newComment =new Comment({comment,commenter});
+ newComment.save().then(async(result)=>{
   
   // acsses artical schema and find by the id then update the schma with commet id 
 

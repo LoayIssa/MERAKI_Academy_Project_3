@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     country: { type: String },
     email: { type: String , required:true,unique:true },
     password:{type:String , required:true,unique:true},
-    role:{type:mongoose.Schema.ObjectId,ref:"Role" }
+    roles:{type:mongoose.Schema.ObjectId,ref:"Role" }
   });
 
 
