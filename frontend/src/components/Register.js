@@ -22,7 +22,7 @@ const Register = ()=>{
     axios.post(`http://localhost:5000/users` , newUser)
      .then((result)=>{
 
-      if(result.status===200){
+      if(!result.data.errors){
         console.log("result",result)
 
 
