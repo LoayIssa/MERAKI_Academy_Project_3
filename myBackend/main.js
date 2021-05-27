@@ -55,10 +55,11 @@ app.post("/users", createNewAuthor);
 const createNewArticle  = async (req ,res)=>{
   let userId; 
   
-   await User.findOne({firstName:"loay"})
+   await User.findOne({firstName:"firas"})
    .then((result)=>{
 
      userId = result
+     console.log("userId",userId)
 
    }).catch((err) => {
      res.send(err);
@@ -208,8 +209,7 @@ const login  = (req, res, next) =>{
           country:response.country,
           role:{role:response.roles.role,permissions:response.roles.permissions}
         }
-
-        console.log("response.role",response)
+        
         const options ={expiresIn:"60m"}
         const token = jwt.sign(payload, SECRET, options);
 
@@ -237,6 +237,8 @@ const login  = (req, res, next) =>{
 app.post("/login", login );
 
 /*________________________________ */
+//// middleware functions  
+
 const authentication =(req,res,next)=>{
   console.log("token",req.headers.authentication)
 
