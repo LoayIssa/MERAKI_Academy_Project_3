@@ -11,6 +11,8 @@ const Navigation = ()=>{
       <div className = "navbar">
       <Link  className ="register" to = "/register">Register</Link>
       <Link to = "/login">Login</Link>
+      <Link className ="dashboard" to = "/dashboard">Dashboard</Link>
+      <Link  to = "/new-article">New article</Link>
       </div>
       </>
     );
