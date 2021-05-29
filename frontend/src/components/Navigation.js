@@ -12,7 +12,7 @@ const Navigation = ()=>{
       <Link  className ="register" to = "/register">Register</Link>
       <Link to = "/login">Login</Link>
       <Link className ="dashboard" to = "/dashboard">Dashboard</Link>
-      <Link  to = "/new-article">New article</Link>
+      <Link  to = "/newArticle">New article</Link>
       </div>
       </>
     );

@@ -37,7 +37,7 @@ const Login =(props)=>{
       }}/>
       <button onClick={cheakLogin}>Login</button>
     </div>
-    <div className="errorlogin">{loginError ? <p className="errCreated">{loginError}</p> : ""}</div>
+    <div className="errorlogin">{loginError ? <p className="loginerr">{loginError}</p> : ""}</div>
 
     </>
   );
