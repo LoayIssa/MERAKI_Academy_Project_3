@@ -73,3 +73,27 @@
   font-size: 16px;
   resize: none;
 }
+
+.parantarticles
+{
+  display: grid;
+  grid-template-columns: 50% 50% ; 
+  grid-template-rows: 150px 150px;
+  padding:  auto;
+
+}
+.parantarticles >div 
+{
+  border: 1px solid darkgrey;
+}
+
+.parantarticles >div h2 
+{
+  padding-left: 10px;
+  color: black;
+}
+ .parantarticles >div p
+ {
+  padding-left: 10px;
+  color:darkgray;
+ }
