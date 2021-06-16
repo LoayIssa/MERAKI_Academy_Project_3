@@ -6,8 +6,8 @@ const createNewAuthor = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   password = hashedPassword;
   const query = `INSERT INTO users  (firstName, lastName, age, country, email, password, role_id) VALUES (?,?,?,?,?,?,?);`
-  const arr = [firstName, lastName, age, country, email, password, role_id];
-  db.query(query,arr,(err,result)=>{
+  const data = [firstName, lastName, age, country, email, password, role_id];
+  db.query(query,data,(err,result)=>{
 	  if (err){
 		  res.send(err)
 	  }

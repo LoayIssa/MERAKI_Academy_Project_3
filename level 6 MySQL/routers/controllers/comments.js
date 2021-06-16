@@ -1,24 +1,17 @@
-const commentsModel = require('./../../db/models/comments');
+const db = require("../../db/db");
 
 const createNewComment = (req, res) => {
-	const articleId = req.params.id;
-
-	const { comment, commenter } = req.body;
-
-	const newComment = new commentsModel({
-		comment,
-		articleId,
-		commenter,
-	});
-
-	newComment
-		.save()
-		.then((result) => {
-			res.status(201).json(result);
-		})
-		.catch((err) => {
-			res.send(err);
-		});
+	const article_id = req.params.id;
+    
+	const { comment,  commenter_id } = req.body;
+	const query = `INSERT INTO comments (comment, article_id, commenter_id) VALUES(?,?,?)`;
+	const data =[comment,article_id, commenter_id];
+	db.query(query,data,(err,result)=>{
+	if(err) throw err
+		res.status(201).json(result)
+		
+	})
+	
 };
 
 module.exports = {
